@@ -14,6 +14,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -34,6 +35,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     public CommandManager(String command) {
         IridiumSkyblock.getInstance().getCommand(command).setExecutor(this);
         IridiumSkyblock.getInstance().getCommand(command).setTabCompleter(this);
+
         registerCommands();
     }
 
@@ -107,6 +109,10 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (command.enabled) {
             int index = Collections.binarySearch(commands, command, Comparator.comparing(cmd -> cmd.aliases.get(0)));
             commands.add(index < 0 ? -(index + 1) : index, command);
+
+            final Permission permission = Bukkit.getPluginManager().getPermission(command.permission);
+            if (permission == null && command.permission.length() >= 1)
+                Bukkit.getPluginManager().addPermission(new Permission(command.permission));
         }
     }
 
@@ -117,6 +123,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
      */
     public void unregisterCommand(Command command) {
         commands.remove(command);
+        Bukkit.getPluginManager().removePermission(command.permission);
     }
 
     /**
@@ -195,7 +202,8 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
 
             boolean success = command.execute(commandSender, args);
-            if (success) cooldownProvider.applyCooldown(commandSender);
+            if (success)
+                cooldownProvider.applyCooldown(commandSender);
             return true;
         }
 
