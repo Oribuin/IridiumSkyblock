@@ -352,7 +352,7 @@ public class IridiumSkyblock extends IridiumCore {
         pluginManager.registerEvents(new BlockBreakListener(), this);
         pluginManager.registerEvents(new BlockExplodeListener(), this);
         pluginManager.registerEvents(new BlockFormListener(), this);
-        pluginManager.registerEvents(new BlockFromToListener(), this);
+//        pluginManager.registerEvents(new BlockFromToListener(), this);
         pluginManager.registerEvents(new BlockGrowListener(), this);
         pluginManager.registerEvents(new BlockPistonListener(), this);
         pluginManager.registerEvents(new BlockPlaceListener(), this);
